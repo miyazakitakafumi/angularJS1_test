@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja" ng-app="myApp">
+    <head>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-route.min.js"></script>
+    </head>
+    <body>
+        <div ng-controller="myController">
+            <p>{{mes}}</p>
+            <button ng-click="getName()">get</button>
+        </div>
+        
+        <script>
+            var myModule = angular.module('myApp', []);
+            
+            myModule.controller('myController', ['$scope', '$http', function($scope, $http){
+                $scope.mes = "test";
+                $scope.yourname = "takeshi";
+                
+                $scope.getName = function(){
+                    
+                    $scope.mes = "getting messages..."
+                    
+                    $http({
+                        method: 'GET',
+                        url: 'hello.php',
+                        params: {name: $scope.yourname}
+                    })
+                    
+                    .then(
+                        //成功時の処理
+                        function(data){
+                        $scope.mes = data.data;
+                        },
+                        
+                        //失敗時の処理
+                        function(data){
+                        $scope.mes = data;
+                        }
+                    );
+                }
+                
+                
+            }]);
+        </script>
+    </body>
+</html>

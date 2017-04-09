@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja" ng-app="myApp">
+    <head>
+        <title>Promise Test</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular-route.min.js"></script>
+    </head>
+    <body>
+        <div ng-controller="myController">
+            <p>{{my_result}}</p>
+            <p>{{my_error}}</p>
+            <p>{{my_notify}}</p>
+            <button type="button" ng-click="myClick()">click</button>
+        </div>
+        
+        <script>
+            var myModule = angular.module('myApp', []);
+            myModule.controller('myController', ['$scope', '$q', function($scope, $q){
+                $scope.my_result = "";
+                $scope.my_error = "";
+                $scope.my_warning = "";
+                
+                //非同期で行われる処理
+//                $scope.asyncFunc = function(name){
+//                    
+//                    //遅延オブジェクトを作成
+//                    var deffered = $q.defer();
+//                    
+//                    setTimeout(function(){
+//                        
+//                        //通知のタイミングで返される結果
+//                        deffered.notify('About to greet ' + name + '.');
+//                        
+//                        if (true) {
+//                            //成功のタイミングで返される結果
+//                            deffered.resolve('Hello, ' + name + '.');
+//                        } else {
+//                            //失敗のタイミングで返される結果
+//                            deffered.reject('Greeting ' + name + ' is not allowed');
+//                        }
+//                    }, 2000);
+//                    //promise オブジェクトを返す
+//                    return deffered.promise;
+//                }
+//                
+//                
+//                $scope.myClick = function(){
+//                    //実行し promise オブジェクトを格納
+//                    var promise = $scope.asyncFunc('Takeshi');
+//                    
+//                    //成功・失敗・通知の各コールバックを設定する
+//                    //コールバックの引数は、上記で定義した結果が渡される
+//                    promise.then(function(greeting){
+//                        console.log('Success: ' + greeting);
+//                    },function(reason){
+//                        console.log('Failed: ' + reason);
+//                    },function(update){
+//                        console.log('Got notification: ' + update);
+//                    })
+//                }
+                
+                //書き方2
+                $scope.asyncFunc = function(name){
+                    
+                    return $q(function(resolve, reject){
+                        setTimeout(function(){
+
+                            if (true) {
+                                //成功のタイミングで返される結果
+                                resolve('Hello, ' + name + '.');
+                            } else {
+                                //失敗のタイミングで返される結果
+                                reject('Greeting ' + name + ' is not allowed');
+                            }
+                        }, 2000);  
+                    });
+                }
+                
+                $scope.myClick = function(){
+                    //実行し promise オブジェクトを格納
+                    var promise = $scope.asyncFunc('Takeshi');
+                    
+                    //成功・失敗・通知の各コールバックを設定する
+                    //コールバックの引数は、上記で定義した結果が渡される
+                    promise.then(function(greeting){
+                        console.log('Success: ' + greeting);
+                    },function(reason){
+                        console.log('Failed: ' + reason);
+                    })
+                }
+                
+                
+                
+            }]);
+        </script>
+    </body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ja" ng-app="sdrModule">
+    <head>
+        <title>test angularJS 1</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.min.js"></script>
+    </head>
+    <body>
+        <div ng-controller="mainController">
+            <form name="formtest">
+                
+                通常の入力<input name="price" type="text" ng-model="normal_input" ng-change="validation.checkFormVal(formtest.$valid)" required>
+                <br />
+                価格:前<input name="price" type="number" ng-model="price" ng-change="validation.checkFormVal(formtest.$valid)" max=55000 min=0>
+                <br />
+                価格:後<input name="price_new" type="number" ng-model="price_new" ng-change="validation.checkFormVal(formtest.$valid)" max=55000 min=0>
+                <br />
+                
+                <button type="submit" ng-click="c_flag()" ng-hide="is_ng">送信</button>
+                
+                <p ng-show="is_ng">price は price_new より小さくなくてはいけません</p>
+                
+                <p ng-show="formtest.$invalid">フォーム内にエラーがあります</p>
+            </form>
+        </div>
+        <script>
+            angular.module('sdrModule', []);
+            
+            angular.module('sdrModule')
+            
+                .config(['MyLogProvider', function(MyLogProvider){
+                    MyLogProvider.default.comment = 'test comment';
+                }])
+                
+                .value('CONST',
+                       {
+                           MESSAGES : {
+                                complete: '成功しました',
+                                failed: '失敗しました'
+                           },
+                            FRUITS : {
+                                red : 'apple',
+                                yellow : 'banana'
+                            }
+                       }
+                )
+                
+                .service('fruitsService', ['$log', function($log){
+                    this.custom_calc = function(a, b){
+                        var result = (a > 10) ? a + b : a -b ;
+                        return result;
+                    }
+                }])
+            
+                .provider('MyLog', function(){
+                    this.default = {comment: 'コメントです'};
+                    this.$get = ['$log', function($log){
+                       var add_comment = this.default.comment;
+                       return {
+                            info : function(messages){
+                                $log.info(add_comment + messages);
+                            }   
+                       }
+                    }];
+                })
+                
+            
+                .controller('mainController', ['$scope', 'CONST', 'fruitsService', 'MyLog', function($scope, CONST, fruitsService, MyLog){
+                    $scope.normal_input = '';
+                    $scope.price = '';
+                    $scope.price_new = '';
+                    
+                    //formtest の有効性確認オブジェクト
+                    $scope.validation = {
+                        
+                        is_valid : true,
+                        is_compare : true,
+                        
+                        compare : function(token){
+                        
+                                if ($scope.price <= $scope.price_new) {
+
+                                    this.is_compare = true;
+                                }else {
+
+                                    this.is_compare = false;    
+                                }
+                        },
+                        
+                        checkFormVal : function(token) {
+                            
+                            //price と price_new に値があるときだけ、比較処理を実行
+                            if ($scope.price != null && $scope.price_new != null) {
+                                this.compare();
+                            }
+                            
+                            //Angularの検証と比較検証が true の時に、フォーム全体のフラグを true にする
+                            if (token === true && this.is_compare === true) {
+                                this.is_valid = true;
+                            } else {
+                                this.is_valid = false;
+                            }
+                            console.log('AngularJS 制御入力検証: ' + token);
+                            console.log('数値比較検証: ' + this.is_compare);
+                            console.log('フォーム全体' + this.is_valid);
+                        }
+                        
+                        
+                    };
+                    
+                    
+                    
+                }]);
+        </script>
+    </body>
+</html>
