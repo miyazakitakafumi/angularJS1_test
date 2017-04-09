@@ -8,20 +8,15 @@
         <div ng-controller="mainController">
             <form name="formtest">
                 
-                通常の入力<input name="price" type="text" ng-model="normal_input" ng-change="validation.checkFormVal(formtest.$valid)" required>
+                価格:前<input name="price" type="number" ng-model="price" ng-change="myCompare()" max=55000 min=0>
                 <br />
-                価格:前<input name="price" type="number" ng-model="price" ng-change="validation.checkFormVal(formtest.$valid)" max=55000 min=0>
-                <br />
-                価格:後<input name="price_new" type="number" ng-model="price_new" ng-change="validation.checkFormVal(formtest.$valid)" max=55000 min=0>
+                価格:後<input name="price_new" type="number" ng-model="price_new" ng-change="myCompare()" max=55000 min=0>
                 <br />
                 
-                <p>{{validation.is_ang_validation = formtest.$valid}}</p>
                 
                 <button type="submit" ng-click="c_flag()" ng-hide="is_ng">送信</button>
                 
-                <p ng-show="is_ng">price は price_new より小さくなくてはいけません</p>
-                
-                <p ng-show="formtest.$invalid">フォーム内にエラーがあります</p>
+                <p ng-show="rule_flag.compare_ng">price は price_new 以下でなくてはいけません</p>
             </form>
         </div>
         <script>
@@ -70,8 +65,27 @@
                     
                     //初期化処理
                     $scope.normal_input = '';
-                    $scope.price = 60000;
-                    $scope.price_new = 50000;
+                    $scope.price = 5000;
+                    $scope.price_new = 5000;
+                    
+                    $scope.rule_flag = {
+                        compare_ng : null
+                    };
+                    
+                    //入力制御
+                    $scope.myCompare = function (){
+                        
+                        $scope.rule_flag.compare_ng = null;
+                        console.log ($scope.rule_flag.compare_ng);
+                        
+                        if ($scope.price > $scope.price_new) {
+                            $scope.price = $scope.price_new;
+                            $scope.rule_flag.compare_ng = true;
+                        } else {
+                            $scope.rule_flag.compare_ng = false;
+                        }
+                        
+                    }
                     
                     
                     
