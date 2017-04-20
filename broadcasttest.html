@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+    <head>
+        <title>Angular16 Test</title>
+        <meta charset="UTF-8">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.js"></script>
+    </head>
+    <body>
+        
+        <div ng-controller="testController">
+            <button type="button" ng-click="pushEvent()">event!</button>
+        </div>
+        
+        <script>
+            angular.module('myApp', []);
+            
+            angular.module('myApp').run([ '$rootScope', function($rootScope){
+               
+                $rootScope.$on('testEvent', function (e, v){
+                    
+                    //イベントを取得
+                    console.log(e);
+                    //イベント発生時に渡された値を取得
+                    console.log(v);
+                    //イベント取得時のメッセージを表示
+                    console.log('Got event');
+                });
+            }]);
+            
+            angular.module('myApp').service('myService', ['$rootScope', '$timeout', function ($rootScope, $timeout) {
+               
+                this.ev = function(){
+                    $timeout(function(){
+                    
+                        $rootScope.$emit('testEvent', {item:1, name: 'miyazaki', age:29} );
+                    }, 2000);
+                }
+            }]);
+            
+            angular.module('myApp').controller('testController', ['$scope', '$rootScope', 'myService', function($scope, $rootScope, myService){
+               
+                $scope.pushEvent = function () {
+                    
+                    myService.ev();
+                }
+            }]);
+        </script>
+    </body>
+</html>
