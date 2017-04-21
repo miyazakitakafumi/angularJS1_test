@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+    <head>
+        <title>Angular16 Test</title>
+        <meta charset="UTF-8">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.js"></script>
+    </head>
+    <body>
+        <div ng-controller="myController">
+            <transclude-false>
+                <p>aaaa</p>
+            </transclude-false>
+        </div>
+        
+        <script>
+            angular.module('myApp', []);
+            
+            angular.module('myApp').directive('transcludeFalse', function (){
+                
+                return {
+                    restrict: 'E',
+                    transclude: true,
+                    template: '<div><span ng-transclude></span></div>'
+                }
+            });
+            
+            angular.module('myApp').controller('myController', function () {
+                
+            });
+        </script>
+    </body>
+</html>
