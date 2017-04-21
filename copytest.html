@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+    <head>
+        <title>Angular16 Test</title>
+        <meta charset="UTF-8">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.js"></script>
+    </head>
+    <body>
+        
+        <script>
+            
+            var obj1 = {name: 'aaa', age: 30};
+            var obj2 = obj1;
+            var obj3 = obj1;
+//            var obj2 = angular.copy(obj1);
+            
+            console.log(obj1);
+            console.log(obj2);
+            console.log(obj3);
+            
+            obj2.name = '222';
+            
+            console.log(obj1);
+            console.log(obj2);
+            console.log(obj3);
+            
+            //単なる = だと、参照先は同じなので全部値がかわる
+        </script>
+    </body>
+</html>
