@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+    <head>
+        <title>Angular16 Test</title>
+        <meta charset="UTF-8">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.4.2/angular-ui-router.js"></script>
+        <script src="./lib/ngStorage.js"></script>
+    </head>
+    <body>
+        <div ng-controller="mainController">
+            <button type="button" ng-click="toPageA()">Aへ</button>
+            <button type="button" ng-click="toPageB()">Bへ</button>
+            <div ui-view>
+            </div>
+        </div>
+        
+<!--        テンプレート-->
+        <script id="pageA.html" type="text/ng-template">
+            <div ng-controller="pageAController">
+                <ul ng-repeat="v in dummyData">
+                    <li>{{v.name}} : {{v.age}} </li>
+                </ul>
+                <p>{{test}}</p>
+            </div>
+        </script>
+        
+        <script id="pageB.html" type="text/ng-template">
+            <div ng-controller="pageBController">
+                <ul ng-repeat="v in dummyData">
+                    <li>{{v.name}} : {{v.age}} </li>
+                </ul>
+                <p>{{test}}</p>
+            </div>
+        </script>
+        
+        <script id="pageC.html" type="text/ng-template">
+<!--            <div ng-controller="pageCController">-->
+                <p>Cです</p>
+<!--            </div>-->
+        </script>
+<!--/       テンプレート-->
+
+<!--
+        <div ng-controller="loginController">
+            <label for="user_name">ユーザー名</label>
+            <input id="user_name" type="text" ng-model="loginUser">
+            <br />
+            <label for="user_pass">パスワード</label>
+            <input id="user_pass" type="password" ng-model="loginPassword">
+            <br />
+            
+            <button type="button" ng-click="login()">ログイン</button> <br />
+            <button type="button" ng-click="logout()">ログアウト</button> <br />
+            <button type="button" ng-click="checklogin()">ログイン状態チェック</button> <br />
+        </div>
+        
+        <div ng-controller="myController">
+            ようこそ、{{display_user}}
+        </div>
+        
+        <div ng-controller="myController2">
+            <button type="button" ng-click="logout()">ログアウト</button>
+        </div>
+-->
+        
+        <script>
+            //モジュール定義
+            angular.module('myApp', ['ngStorage', 'ui.router']);
+            
+            //ルート定義
+            angular.module('myApp').config(['$stateProvider', function( $stateProvider ){
+                
+               var sharedObj = { aaa: 'AAA'};
+                
+                
+                $stateProvider
+                  .state('page-A', {
+                    url: '/pageA',
+                    templateUrl: 'pageA.html',
+                    controller: 'pageAController',
+                    resolve: {
+                        test: function (){
+                            return [1,2,3,3,5];
+                        }
+                    }
+                  })
+                  .state('page-B', {
+                    url: '/pageB',
+                    templateUrl: 'pageB.html',
+                    controller: 'pageBController',
+                    resolve: {
+                        test: function (){
+                            return [2,4,3,4,5];
+                        }
+                    }
+                  })
+                  .state('page-C', {
+                    url: '/pageC',
+                    templateUrl: 'pageC.html',
+                    controller: 'pageCController',
+                    resolve: {
+                        ttt: function (){
+                            return ["c","c","c","c","c"];
+                        }
+                    }
+                  })
+            }]);
+            
+            //ファクトリー定義
+            angular.module('myApp').factory('testFactory1', function(){
+               
+                return function testFactory1( name ){
+                    
+                    var communication = {};
+                    var target_name = name;
+                    
+                    communication.sayHello = function (){
+                        
+                        console.log('hello ' + target_name );
+                    }
+                    
+                    communication.sayGoodBy = function (){
+                        
+                        console.log('Bye ' + target_name);
+                    }
+                    
+                    return communication;
+                }
+            });
+            
+            //サービス定義
+            angular.module('myApp').service('testService', function(){
+                
+                this.name = 'bob';
+                
+                this.sayHello = function (){
+                    console.log('hello Service ' + this.name );
+                }
+                
+                this.sayGoodBy = function (aaa){
+                    console.log('Bye Service ' + this.name );
+                }
+                
+            });
+            
+            //コントローラー定義
+            angular.module('myApp').controller('mainController', function($scope, $state){
+                
+                $scope.toPageA = function () {
+                    
+                    $state.go('page-A');
+                }
+                
+                $scope.toPageB = function () {
+                    
+                    $state.go('page-B');
+                }
+            });
+            
+            
+            
+            angular.module('myApp').controller('loginController', ['$scope', '$localStorage', function($scope, $localStorage){
+                
+                //ログイン処理
+                $scope.login = function () {
+                    
+                    
+                    console.log('ログイン処理開始');
+                    
+                    if ( $scope.loginUser === 'a' && $scope.loginPassword === 'a') {
+                        
+                        $localStorage.login_flag = true;
+                        $localStorage.login_user = $scope.loginUser;
+                        console.log ('ログインしました');
+                    } else {
+                        
+                        $localStorage.login_flag = false;
+                        $localStorage.login_user = '';
+                        console.log ('ログインに失敗しました。');
+                    }
+                    console.log ('ログイン処理終了');
+                }
+                
+                //ログアウト処理
+                $scope.logout = function () {
+                    
+                    $localStorage.$reset();
+                }
+                
+                //ログイン状態のチェック
+                $scope.checklogin = function () {
+                    
+                    if ( $localStorage.login_flag ) {
+                        
+                        console.log ('ログインしています。');
+                    } else {
+                        
+                        console.log('ログインしていません');
+                    }
+                    
+                    console.log('ユーザー名: ' + $localStorage.login_user);
+                    console.log('ログイン状態: ' + $localStorage.login_flag);
+                }
+            }]);
+            
+            angular.module('myApp').controller('pageAController', ['$scope', 'testFactory1', 'testService', '$localStorage','test', function($scope, testFactory1, testService, $localStorage, test){
+                
+                $scope.test = test;
+//                console.log(test);
+                
+                $scope.dummyData = [
+                    { name: '山田', age: 29},
+                    { name: '青木', age: 21},
+                    { name: '田中', age: 60},
+                    { name: '下澤', age: 33}
+                ];
+                
+                $scope.mes1 = "page A!!!";
+                
+                
+            }]);
+            
+            angular.module('myApp').controller('pageBController', ['$scope', 'testFactory1', 'testService', '$localStorage','test', function($scope, testFactory1, testService, $localStorage, test){
+                
+                $scope.test = test;
+//                console.log(test);
+                
+                $scope.dummyData = [
+                    { name: '小林', age: 25},
+                    { name: '渡辺', age: 44},
+                    { name: '北村', age: 54},
+                    { name: '四島', age: 28}
+                ];
+                
+                $scope.mes1 = "page B!!!";
+                
+                
+            }]);
+            
+            angular.module('myApp').controller('pageCController', ['$scope', 'ttt', function($scope, ttt){
+                
+                console.log(ttt);
+                
+                $scope.dummyData = [
+                    { name: '小林', age: 25},
+                    { name: '渡辺', age: 44},
+                    { name: '北村', age: 54},
+                    { name: '四島', age: 28}
+                ];
+                
+                $scope.mes1 = "page C!!!";
+                
+                
+            }]);
+        </script>
+    </body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+    <head>
+        <title>Angular16 Test</title>
+        <meta charset="UTF-8">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.js"></script>
+    </head>
+    <body>
+        
+        <div ng-controller="myController">
+            
+            <p>{{count}}</p>
+            
+<!--
+            <button type="button" ng-click="angClick()">ang</button>
+            <button type="button" onClick="angClick()">normal</button>
+-->
+            <button type="button" ng-click="checkCount()">normal</button>
+        </div>
+        
+        <script>
+            //モジュール定義
+            angular.module('myApp', []);
+            
+            //コントローラー定義
+            angular.module('myApp').controller('myController', ['$scope', '$interval', function ($scope,$interval) {
+                
+                $scope.count = 1;
+                
+//                $interval(function (){
+//                    
+//                    $scope.count++;
+//                }, 1000);
+                
+                setInterval(function(){
+                    
+                    $scope.count++;
+                    $scope.$apply();
+                }, 1000);
+                
+                
+                $scope.checkCount = function () {
+                    
+                    console.log($scope.count);
+                }
+                
+                
+            }]);
+        </script>
+    </body>
+</html>

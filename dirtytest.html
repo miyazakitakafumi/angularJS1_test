@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+    <head>
+        <title>Angular16 Test</title>
+        <meta charset="UTF-8">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.js"></script>
+    </head>
+    <body>
+        
+        <div ng-controller="myController">
+            <form name="testForm">
+                <input type="text" name="mytext" ng-model="mydata">
+                <p>{{mydata}}</p>
+                <p>{{testForm.mytext.$dirty}}</p>
+            </form>
+            
+            <button type="button" ng-click="checkDirty()">check dirty</button>
+        </div>
+        
+        <script>
+            angular.module('myApp', []);
+            
+            angular.module('myApp').controller('myController', function ($scope) {
+               
+                $scope.mydata = null;
+                
+                $scope.checkDirty = function () {
+                    
+                    console.log('mydata');
+                    console.log($scope.mydata);
+                    
+                    if ( $scope.testForm.mytext.$dirty && $scope.mydata === '') {
+                        
+                        console.log('null に変更されました');
+                    }
+                }
+                
+            });
+        </script>
+    </body>
+</html>
