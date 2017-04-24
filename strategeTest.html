@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+    <head>
+        <title>Angular16 Test</title>
+        <meta charset="UTF-8">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.js"></script>
+    </head>
+    <body>
+        <div ng-controller="myController">
+        </div>
+        
+        <script>
+            //モジュール定義
+            angular.module( 'myApp', [] );
+            
+            //コントローラー定義
+            angular.module( 'myApp' ).controller( 'myController', [ '$scope', 'myService', function ( $scope, myService ) {
+                
+                var dummyData = [
+                    
+                    { type: 'text', value: 'test text1' },
+                    { type: 'number', value: 12345 },
+                    { type: 'date', value: '2016/02/29' },
+                    { type: 'price', value: 120 }
+                ];
+                
+                var dummyData2 = [
+                    
+                    { type: 'text', value: 'test text2' },
+                    { type: 'number', value: 6789 },
+                    { type: 'date', value: '2017/02/33' },
+                    { type: 'price', value: -900 }
+                ];
+                
+                var dummyData3 = { num1: 8890 };
+                
+                
+                myService.runValidation ( dummyData3 );
+            }]);
+            
+            //サービス定義
+            angular.module('myApp').service( 'myService', function () {
+                
+                /**
+                 * 引数などに応じてふるまいを変える場合
+                 * if - else if で処理を分岐するのではなく、ストラテジーパターンで。
+                 */
+                
+                //各バリデーション関数保管用
+                this.types = {}; 
+                
+                //データ名とデータタイプのマッピング用
+                this.configs = {
+                    
+                    num1: 'number'
+                }; 
+                
+                
+                //実際のふるまい部分
+                this.types.text = function ( val ) {
+                    
+                    console.log('this is text ' + val);
+                }
+                
+                this.types.number = function ( val ) {
+                    
+                    console.log('this is number ' + val);
+                }
+                
+                this.types.date = function ( val ) {
+                    
+                    console.log('this is date ' + val);
+                }
+                
+                this.types.price = function ( val ) {
+                    
+                    console.log('this is price ' + val);
+                }
+                
+                this.runValidation = function ( data ) {
+                    
+                    for (var i in data ) {
+                        
+                        var type = this.configs[i];
+                        this.types[ type ]( data[i] );
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>

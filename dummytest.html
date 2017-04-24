@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+    <head>
+        <title>Angular16 Test</title>
+        <meta charset="UTF-8">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.js"></script>
+    </head>
+    <body>
+        <div ng-controller="myController">
+        </div>
+        
+        <script>
+            //モジュール定義
+            angular.module( 'myApp', [] );
+            
+            //コントローラー定義
+            angular.module( 'myApp' ).controller( 'myController', function () {
+                
+//                var text1 = '1';
+//                var text2 = '01';
+//                
+//                var after_text1 = ("0" + text1).slice(-2);
+//                var after_text2 = ("0" + text2).slice(-2);
+//                
+//                console.log( after_text1 );
+//                console.log( after_text2 );
+                
+                var a = ['a', 'b', 'c'];
+                var b = ['x', 'y', 'z'];
+                var c = ['1', '2', '3'];
+
+                console.log(a.concat(a, a, b, b, c, c, true));
+
+            });
+        </script>
+    </body>
+</html>
