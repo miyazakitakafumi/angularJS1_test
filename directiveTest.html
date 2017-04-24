@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+    <head>
+        <title>Angular16 Test</title>
+        <meta charset="UTF-8">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.js"></script>
+    </head>
+    <body>
+        
+        <div ng-controller="myController">
+            
+            <my-directive nnn="AAA"></my-directive>
+            
+        </div>
+        
+        <script>
+            //モジュール定義
+            angular.module('myApp', []);
+            
+            //ディレクティブ定義
+            angular.module('myApp').directive('myDirective', function () {
+                
+                return {
+                    scope: {
+                        nnn: '=',
+                        aaa: '@'
+                    },
+//                    scope: false,
+                    template: '<input type="text" ng-model="nnn">',
+                    link: function (scope) {
+                        
+                        console.log(scope.nnn);
+                    }
+                }
+            });
+            
+            //コントローラー定義
+            angular.module('myApp').controller('myController', function ($scope) {
+                
+                $scope.dummyData = [
+                    {name: 'tanaka', age: 22},
+                    {name: 'yamashita', age: 54},
+                    {name: 'simozawa', age: 30},
+                    {name: 'yokota', age: 71}
+                ];
+                
+                $scope.myValue = "aaa";
+                $scope.AAA = "this is aaa";
+                
+            });
+        </script>
+    </body>
+</html>

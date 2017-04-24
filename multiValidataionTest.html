@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+    <head>
+        <title>Angular16 Test</title>
+        <meta charset="UTF-8">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.js"></script>
+    </head>
+    <body>
+        <div ng-controller="myController">
+        </div>
+        
+        <script>
+            //モジュール定義
+            angular.module( 'myApp', [] );
+            
+            //コントローラー定義
+            angular.module( 'myApp' ).controller( 'myController', [ '$scope', 'myService', function ( $scope, myService ) {
+                
+                var dummyData = [
+                    
+                    { type: 'text', value: 'test text1' },
+                    { type: 'number', value: 12345 },
+                    { type: 'date', value: '2016/02/29' },
+                    { type: 'price', value: 120 }
+                ];
+                
+                var dummyData2 = [
+                    
+                    { type: 'text', value: 'test text2' },
+                    { type: 'number', value: 6789 },
+                    { type: 'date', value: '2017/02/33' },
+                    { type: 'price', value: -900 }
+                ];
+                
+                if ( myService.checkMultiValidation( dummyData ) ) {
+                    
+                    console.log ( 'データは問題ありません' );
+                }
+                
+                if ( myService.checkMultiValidation( dummyData2 ) ) {
+                    
+                    console.log ( 'データは問題ありません' );
+                }
+            }]);
+            
+            //サービス定義
+            angular.module('myApp').service( 'myService', function () {
+                
+                /**
+                 * メイン関数
+                 *
+                 * @param array target_array
+                 *              評価するデータの配列。配列の要素はオブジェクト。
+                 *              オブジェクトは type と value プロパティーを持ち、type がデータ型、value が評価対象のデータとする
+                 *              ex) [
+                 *                      { type: 'text', value: 'test text' },
+                 *                      { type: 'number', value: 12345 },
+                 *                      { type: 'date', value: '2017/02/29' },
+                 *                      { type: 'price', value: 120 }
+                 *                  ]
+                 * @return boolean すべてのデータのバリデーションが問題ない場合 true、それ以外は false
+                 */
+                this.checkMultiValidation = function ( target_array ) {
+                    
+                    var self = this;
+                    return target_array.every ( self._customeValidation, self );
+                }
+                
+                //データ型によって適切なバリデーションを実行する関数
+                this._customeValidation = function ( obj ) {
+                    
+                    if ( obj.type === 'text' ) {
+
+                        //テキストデータの場合の処理
+//                        console.log ('--text--');
+//                        console.log(this._isString ( obj['value'] ) );
+                        
+                        return ( this._isString ( obj['value'] ) ) ? true : false;    
+                    } else if ( obj.type === 'number' ) {
+
+                        //数値の場合の処理
+//                        console.log ('--number--');
+//                        console.log( this._isNumber ( obj['value'] ) );
+                        
+                        return ( this._isNumber ( obj['value'] ) ) ? true : false; 
+                    } else if ( obj.type === 'date' ) {
+
+                        //日付の場合の処理(引数はスラッシュ区切りの日付)
+//                        console.log ('--date--');
+//                        console.log ( this._isDate ( obj['value'] ) );
+                        
+                        return ( this._isDate ( obj['value'] ) ) ? true : false; 
+                    } else if ( obj.type === 'price' ) {
+
+                        //値段の場合の処理(小数点やマイナスがある場合 false )
+//                        console.log ('--price--');
+//                        console.log ( this._isPrice ( obj['value'] ) );
+                        
+                        return ( this._isPrice ( obj['value'] ) ) ? true : false; 
+                    }
+                }
+                
+                //文字列かチェック
+                this._isString = function ( o ) {
+                    
+                    return typeof ( o ) == "string" || o instanceof String;
+                }
+                
+                //数値かチェック
+                this._isNumber = function ( o ) {
+                    
+                    return isFinite( o );
+                }
+                
+                //日付かチェック
+                this._isDate = function ( o ) {
+                 
+                    var date = new Date ( o );
+                    var yyyy = date.getFullYear();
+                    var mm = ( "0" + ( date.getMonth() + 1 ) ).slice( -2 );
+                    var dd = ( "0" + date.getDate() ).slice( -2 );
+                    
+                    if ( o == ( yyyy + "/" + mm + "/" + dd ) ) {
+                        
+                        return true;
+                    } else {
+                        
+                        return false;
+                    }
+                }
+                
+                //値段かチェック
+                this._isPrice = function ( o ) {
+                    
+                    var pattern = /^([1-9]\d*|0)$/;
+                    return pattern.test ( o );
+                }
+            });
+        </script>
+    </body>
+</html>
