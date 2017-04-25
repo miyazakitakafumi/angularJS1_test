@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+    <head>
+        <title>Angular16 Test</title>
+        <meta charset="UTF-8">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.js"></script>
+    </head>
+    <body>
+        <div ng-controller="myController1">
+        </div>
+        
+        <div ng-controller="myController2">
+        </div>
+        
+        <script>
+            //モジュール定義
+            angular.module( 'myApp', [] );
+            
+            //サービス定義
+            
+            /**
+             * ユーザー情報管理用サービス
+             */
+            angular.module( 'myApp' ).service('UserInfo', function () {
+               
+                //ユーザー情報保管用オブジェクト
+                var user_info = {};
+            
+                //ユーザー情報SET
+                this.setInfo = function () {
+                    
+                    user_info = {
+                        
+                        name: 'tanaka',
+                        token: 'kdjofei902i01kjf',
+                        isLogin: true
+                    };
+                }
+                
+                //ユーザー情報GET
+                this.getInfo = function () {
+                    
+                    return user_info || {};
+                }
+                
+                //ユーザー情報クリア
+                this.clearInfo = function () {
+                    
+                    user_info = null;
+                }
+            });
+            
+            /**
+             * ログインサービス
+             */
+            angular.module( 'myApp' ).service( 'loginService', [ 'UserInfo', function ( UserInfo ) {
+                
+                //ログイン用
+                this.login = function () {
+                    
+                    /**ログイン用APIにリクエストする**/
+                    /**取得した情報をUserInfoにセット**/
+                }
+                
+                //ログアウト用
+                this.logout = function () {
+                    
+                    /**ユーザー情報をクリアしログイン画面へ**/
+                }
+                
+                //ログインチェック用
+                this.checkUserInfo = function () {
+                    
+                    if ( UserInfo.getInfo().isLogin === true ) {
+                        
+                        console.log('ログイン済み');
+                    } else {
+                        
+                        console.log('ログインしてません');
+                    }
+                }
+            }]);
+            
+            //コントローラー定義
+            angular.module( 'myApp' ).controller( 'myController1', ['$scope', 'UserInfo', 'loginService', function ( $scope, UserInfo, loginService ) {
+                
+                UserInfo.setInfo();
+                loginService.checkUserInfo();
+                UserInfo.clearInfo();
+                loginService.checkUserInfo();
+            }]);
+            
+            angular.module( 'myApp' ).controller( 'myController2', ['$scope', 'UserInfo', function ( $scope, UserInfo ) {
+                
+                
+            }]);
+        </script>
+    </body>
+</html>
