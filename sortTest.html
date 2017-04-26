@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+    <head>
+        <title>Angular16 Test</title>
+        <meta charset="UTF-8">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.js"></script>
+        
+        <style>
+            #myTable {
+                border: 1px solid;
+            }
+            #myTable tr {
+                border: 1px solid;
+            }
+            #myTable tr th {
+                border: 1px solid;
+            }
+            #myTable tr td {
+                border: 1px solid;
+            }
+            
+        </style>
+    </head>
+    <body>
+        <div ng-controller="myController">
+            <table id="myTable">
+                <tr>
+                    <th ng-click="sortKey = 'name'; reverseSort =! reverseSort">名前</th>
+                    <th ng-click="sortKey = 'age'; reverseSort =! reverseSort">年齢</th>
+                </tr>
+                <tr ng-repeat="v in dummyData | orderBy: sortKey : reverseSort">
+                    <td>{{v.name}}</td>
+                    <td>{{v.age}}</td>
+                </tr>
+            </table>
+        </div>
+        
+        <script>
+            //モジュール定義
+            angular.module( 'myApp', [] );
+            
+            //コントローラー定義
+            angular.module( 'myApp' ).controller( 'myController', function ( $scope ) {
+                
+                $scope.sortKey = '';
+                $scope.reverseSort = false;
+                
+                $scope.dummyData = [
+                    
+                    { name: '佐々木', age: 34},
+                    { name: '高橋', age: 10},
+                    { name: '渡辺', age: 22},
+                    { name: '島田', age: 54},
+                    { name: '宮崎', age: 60},
+                    { name: '宮崎', age: 77}
+                ];
+                
+            });
+        </script>
+    </body>
+</html>
