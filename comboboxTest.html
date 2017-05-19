@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+    <head>
+        <title>Angular16 Test</title>
+        <meta charset="UTF-8">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.js"></script>
+    </head>
+    <body>
+        <div ng-controller="myController">
+            
+            <input list="testList" type="text" ng-model="yourData">
+            <datalist id="testList">
+                <option ng-repeat="v in yourList" value="{{v.value}}">
+            </datalist>
+            
+            <button type="button" ng-click="getData()">get data</button>
+        </div>
+        
+        <script>
+            //モジュール定義
+            angular.module( 'myApp', [] );
+            
+            //コントローラー定義
+            angular.module( 'myApp' ).controller( 'myController', function ( $scope ) {
+                
+                $scope.yourData = '';
+                
+                $scope.yourList = [
+                    
+                    { name: "aaa", value: 100},
+                    { name: "bbb", value: 200},
+                    { name: "ccc", value: 300},
+                ];
+                
+                $scope.getData = function () {
+                    
+                    console.log ( $scope.yourData );
+                }
+            });
+        </script>
+    </body>
+</html>

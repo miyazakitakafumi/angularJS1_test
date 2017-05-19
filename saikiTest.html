@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+    <head>
+        <title>Angular16 Test</title>
+        <meta charset="UTF-8">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.js"></script>
+    </head>
+    <body>
+        <div ng-controller="myController">
+            <button ng-click="main()">func1</button>
+        </div>
+        
+        <script>
+            //モジュール定義
+            angular.module( 'myApp', [] );
+            
+            //コントローラー定義
+            angular.module( 'myApp' ).controller( 'myController', function ($scope) {
+                
+                $scope.main = function (){
+                    var param = {};
+                    param.name = 'yamada';
+                    param.age = '33';
+                    
+                    $scope.func1(param);
+                };
+                
+                $scope.func1 = function ( param ) {
+                    
+                    if ( param.force ) {
+                        
+                        console.log('true');
+                        console.log(param);
+                    } else {
+                        console.log('false. set force flag');
+                        param.force = true;
+                        console.log(param);
+                        $scope.func1(param);
+                    }
+                };
+            });
+        </script>
+    </body>
+</html>

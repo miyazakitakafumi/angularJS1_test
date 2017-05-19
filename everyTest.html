@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+    <head>
+        <title>Angular16 Test</title>
+        <meta charset="UTF-8">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.js"></script>
+    </head>
+    <body>
+        <div ng-controller="myController">
+        </div>
+        
+        <script>
+            //モジュール定義
+            angular.module( 'myApp', [] );
+            
+            //コントローラー定義
+            angular.module( 'myApp' ).controller( 'myController', function ($scope) {
+                
+                var isOK = false;
+                var dummyData = [
+                    { name: 'takahashi', age: 23},
+                    { name: 'yamaguchi', age: 40},
+                    { name: 'satoh', age: 33},
+                    { name: 'tanaka', age: 60}
+                ];
+                
+                $scope.checkData = function ( v ) {
+                    
+                    console.log(v);
+                    if ( v > 33) {
+                        
+                        return true;
+                    }
+                }
+                
+                isOK = dummyData.every(function(v){
+                    
+                    return $scope.checkData(v.age);
+                });
+                
+                console.log (isOK);
+            });
+        </script>
+    </body>
+</html>

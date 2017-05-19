@@ -18,44 +18,153 @@
             #myTable tr td {
                 border: 1px solid;
             }
-            
+            .loading{
+                position: fixed;
+                width: 100%;
+                height: 100vh;
+                background: #333;
+                opacity: 0.8;
+            }
         </style>
     </head>
     <body>
-        <div ng-controller="myController">
-            <table id="myTable">
-                <tr>
-                    <th ng-click="sortKey = 'name'; reverseSort =! reverseSort">名前</th>
-                    <th ng-click="sortKey = 'age'; reverseSort =! reverseSort">年齢</th>
-                </tr>
-                <tr ng-repeat="v in dummyData | orderBy: sortKey : reverseSort">
-                    <td>{{v.name}}</td>
-                    <td>{{v.age}}</td>
-                </tr>
-            </table>
+        
+        <div ng-controller="indexController">
+            
+            <p>{{load}}</p>
+            <div class="loading" ng-show="load"></div>
+
+            <div ng-controller="myController">
+
+                <button type="button" ng-click="mySort()">sort</button>
+                <button type="button" ng-click="filterZero()">Zero</button>
+                <button type="button" ng-click="filterOne()">One</button>
+                
+                <table id="myTable">
+                    <tr>
+                        <th >名前</th>
+                        <th ng-click="sendEventLoading()">年齢</th>
+                    </tr>
+                    <tr ng-repeat="v in dummyData" on-finish-render>
+                        <td>{{v.name}}</td>
+                        <td>{{v.age}}</td>
+                    </tr>
+                </table>
+
+
+            </div>
+        
         </div>
         
         <script>
             //モジュール定義
             angular.module( 'myApp', [] );
             
+            //ディレクティブ
+            angular.module('myApp').directive('onFinishRender', ['$timeout', '$interval', function($timeout, $interval) {
+                
+                  return {
+                      
+                    restrict: 'A',
+                    link: function(scope, element, attr) {
+                        
+                    var emit_last = function() {
+                        
+                        if(scope.$last) {
+                            
+                          $timeout(function() {
+//                            window.console.log('ngRepeatFinished!!!');
+                            scope.$emit('ngRepeatFinished');
+                          });
+                        }
+                      };
+                        
+                    var checkData = function(){
+//                        console.log('!!change finishRenderData!!');
+                    };
+                    
+                    scope.$watch('$last', emit_last);
+                        
+                    }
+                      
+                  };
+            }]);
+            
             //コントローラー定義
-            angular.module( 'myApp' ).controller( 'myController', function ( $scope ) {
+            angular.module( 'myApp' ).controller( 'indexController', ['$scope', '$filter', '$rootScope', function ( $scope, $filter, $rootScope ) {
+                
+                $scope.load = false;
+                $scope.viewLoading = false;
+                
+                $rootScope.$on('ngRepeatStarted', function(){
+                    
+//                    console.log('got start event');
+                    $scope.load = true;
+                });
+                
+                $rootScope.$on('ngRepeatFinished', function(){
+                    
+//                    console.log('got end event');
+                    $scope.load = false;
+                });
+                
+            }]);
+            
+            
+            angular.module( 'myApp' ).controller( 'myController', ['$scope', '$filter', '$rootScope', '$timeout', function ( $scope, $filter, $rootScope, $timeout ) {
                 
                 $scope.sortKey = '';
                 $scope.reverseSort = false;
+                $scope.load = false;
                 
-                $scope.dummyData = [
+                $scope.dummyData = [];
+                
+                for (var i = 0; i<10000; i++) {
+                    $scope.dummyData.push({name: 'test', age: i});
+                } 
+                
+                //ソート処理
+                $scope.sendEventLoading = function(){
                     
-                    { name: '佐々木', age: 34},
-                    { name: '高橋', age: 10},
-                    { name: '渡辺', age: 22},
-                    { name: '島田', age: 54},
-                    { name: '宮崎', age: 60},
-                    { name: '宮崎', age: 77}
-                ];
+                    $scope.reverseSort = !$scope.reverseSort;
+                    $scope.sortKey = 'age';
+                    
+                    $scope.showLoading($filter('orderBy')($scope.dummyData, $scope.sortKey, $scope.reverseSort), 'dummyData');
+                    
+                };
                 
-            });
+                //配列を0にする処理
+                $scope.filterZero = function(){
+                  
+                    $scope.showLoading( $filter("filter")($scope.dummyData, '777'), 'dummyData' );
+                };
+                
+                //一つの要素にする処理
+                $scope.filterOne = function(){
+                    
+                    $scope.showLoading( [ {name: 'test', age: 2}], 'dummyData' );
+                };
+                
+                //ロード画面表示処理
+                
+                $scope.showLoading = function( sort_result, target ){
+                    
+                    //$last が変わらないケースは除外
+                    if((sort_result.length > 1) && (JSON.stringify(sort_result) !== JSON.stringify($scope[target]))){
+                        
+                        //ロード画面表示用のフラグを立てる
+                        $scope.$emit('ngRepeatStarted');
+                    }
+                    
+                    //即座に変更せず一瞬待ってから表示実行(即時実行すると、ロード画面がでない)
+                    $timeout(function(){
+
+                        $scope[target] = sort_result;
+                    }, 50); 
+                };
+                
+                
+            }]);
         </script>
     </body>
 </html>

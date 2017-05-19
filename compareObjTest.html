@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+    <head>
+        <title>Angular16 Test</title>
+        <meta charset="UTF-8">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.js"></script>
+    </head>
+    <body>
+        <div ng-controller="myController">
+            <button ng-click="compareObj(dummyData1, dummyData2)">compare</button>
+        </div>
+        
+        <script>
+            //モジュール定義
+            angular.module( 'myApp', [] );
+            
+            //コントローラー定義
+            angular.module( 'myApp' ).controller( 'myController', function ($scope) {
+                
+                $scope.dummyData1 = {};
+                $scope.dummyData2 = {};
+                
+                $scope.dummyData1 = {
+                    name: 'yamada',
+                    age: '28',
+                    memo: 'yamada text'
+                };
+                
+                $scope.dummyData2 = {
+                    name: 'yamada',
+                    age: '28',
+                    memo: 'yamada text'
+                };
+                
+                $scope.compareObj = function(oldVal, newVal){
+                  
+//                    if (angular.equals(oldVal, newVal)){
+                    if (oldVal === newVal){
+                        
+                        console.log('true');
+                        return true;
+                    } else {
+                        
+                        console.log('false');
+                        return false;
+                    }
+                };
+            });
+        </script>
+    </body>
+</html>

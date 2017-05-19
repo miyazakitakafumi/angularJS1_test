@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+    <head>
+        <title>Angular16 Test</title>
+        <meta charset="UTF-8">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.js"></script>
+    </head>
+    <style>
+        table { 
+            border-collapse: collapse;
+        }
+        table, td, th {
+            border: 2px #ff0000 solid;
+        }
+        th {
+            cursor: pointer;
+        }
+        .sortOrder:after{
+            content: '\25b2';
+/*            content: '\25bc';*/
+/*            content: 'aaa'; */
+        }
+        .sortOrder.reverse:after{
+            content: '\25bc';   
+        }
+    </style>
+    <body>
+        <div ng-controller="myController">
+            <table>
+                <tr>
+                    <th>#</th>
+                    <th ng-click="sortTable('name')">名前<span class="sortOrder" ng-show="orderKey === 'name'" ng-class="{reverse: orderReverse}"></span></th>
+                    <th ng-click="sortTable('age')">年齢<span class="sortOrder" ng-show="orderKey === 'age'" ng-class="{reverse: orderReverse}"></span></th>
+                    <th ng-click="sortTable('created_at')">作成日時<span class="sortOrder" ng-show="orderKey === 'created_at'" ng-class="{reverse: orderReverse}"></span></th>
+                </tr>
+                <tr ng-repeat="v in dummyData | orderBy : orderKey : orderReverse" on-finish-render="finishedRepeat" >
+                    <td>{{ $index+1 }}</td>
+                    <td>{{ v.name }}</td>
+                    <td>{{ v.age }}</td>
+                    <td>{{ v.created_date }}</td>
+                </tr>
+            </table>
+        </div>
+        
+        <script>
+            //モジュール定義
+            angular.module( 'myApp', [] );
+            
+            //ディレクティブ定義
+            angular.module( 'myApp').directive('onFinishRender', function ($timeout) {
+                return {
+                    restrict: 'A',
+                    link: function (scope, element, attr) {
+                        if (scope.$last === true) {
+                            $timeout(function () {
+                                scope.$emit(attr.onFinishRender);
+                            });
+                        }
+                    }
+                }
+            });
+            
+            //コントローラー定義
+            angular.module( 'myApp' ).controller( 'myController', function ( $scope ) {
+                
+                $scope.dummyData = [];
+                
+                $scope.orderKey = '';
+                $scope.orderReverse = false;
+                
+                for (var i = 0; i < 3000; i++) {
+                    var rand = Math.floor( Math.random() * 40 ) + 20 ;
+                    $scope.dummyData.push ( { name: 'miyazaki', age: rand, created_date: '2017/05/01'} );
+                }
+                
+                
+                $scope.$on('finishedRepeat', function () {
+                    
+                    console.log('--end repeat---');
+                });
+                
+                $scope.sortTable = function ( sortKey ) {
+                    
+                    $scope.orderKey = sortKey;
+                    $scope.orderReverse = !$scope.orderReverse;
+//                    $scope.dummyData.push({ name: 'dummy', age: 88, created_at: '0000/00/00'});
+                }
+                
+            });
+        </script>
+    </body>
+</html>
